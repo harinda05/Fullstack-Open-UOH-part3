@@ -12,7 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.21.1",
+    "fullstack-open-uoh-part3": "file:",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.7"
   }
