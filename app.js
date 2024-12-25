@@ -7,7 +7,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
-
+app.use(express.static('dist'))
 
 morgan.token('json_body', function getBody (req) {
     return JSON.stringify(req.body)
@@ -74,7 +74,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
     if(person){
         phoneBook.splice(id - 1, 1)
-        response.status(204).end()
+        response.status(200).send(JSON.stringify(person))
     } else {
         response.status(404).end()
     }
@@ -87,7 +87,7 @@ app.post('/api/persons', (request, response) => {
     const id = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
     const person = {
-        id: id,
+        id: id.toString(),
         name: request.body.name,
         number: request.body.number
     }
@@ -98,7 +98,8 @@ app.post('/api/persons', (request, response) => {
         response.status(400).send({ error: 'name must be unique'  })
     } else {
         phoneBook.push(person)
-        response.send(phoneBook.find(person => person.id === id))
+        console.log(phoneBook.find(person => person.id === id.toString()));
+        response.send(phoneBook.find(person => person.id === id.toString()))
     }
 
 })
