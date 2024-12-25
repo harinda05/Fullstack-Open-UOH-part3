@@ -70,11 +70,11 @@ app.get('/api/persons/:id', (request, response) => {
 app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
 
-    const person  = phoneBook.find(person => person.id === id )
+    const personIndex = phoneBook.findIndex(person => person.id === id);
 
-    if(person){
-        phoneBook.splice(id - 1, 1)
-        response.status(200).send(JSON.stringify(person))
+    if(personIndex !== -1){
+        const deletedPerson = phoneBook.splice(personIndex, 1)[0];
+        response.status(200).json(deletedPerson);
     } else {
         response.status(404).end()
     }
