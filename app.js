@@ -1,6 +1,8 @@
 const express = require('express')
 var morgan = require('morgan')
+require('dotenv').config()
 const cors = require('cors')
+const Person = require('./models/person')
 
 
 const app = express()
@@ -41,7 +43,10 @@ let phoneBook = [
 
 // get all persons
 app.get('/api/persons', (request, response) => {
-    response.send(phoneBook)
+    Person.find({}).then(result => {
+        console.log("queried all persons from db %s", result)
+        response.send(result)
+    })
 })
 
 // get info
@@ -86,20 +91,22 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const id = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
-    const person = {
-        id: id.toString(),
-        name: request.body.name,
-        number: request.body.number
-    }
-
     if(!request.body.name || !request.body.number){
         response.status(400).send({ error: 'malformed request body' })
     } else if (phoneBook.find(person => person.name === request.body.name)){
         response.status(400).send({ error: 'name must be unique'  })
     } else {
-        phoneBook.push(person)
-        console.log(phoneBook.find(person => person.id === id.toString()));
-        response.send(phoneBook.find(person => person.id === id.toString()))
+
+        const person = new Person({
+            id: id.toString(),
+            name: request.body.name,
+            number: request.body.number
+        })
+
+        person.save().then(savedPerson => {
+            console.log("saved new person in db %s", savedPerson);
+            response.send(savedPerson)
+        })
     }
 
 })
