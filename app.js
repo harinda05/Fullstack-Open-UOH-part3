@@ -73,16 +73,33 @@ app.get('/api/persons/:id', (request, response) => {
 
 // delete single person
 app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
+    const id = request.params.id.toString()
+    console.log ("deleting: " + id)
+    Person.findOneAndDelete({ ["id"]: id })
+    .then(result => {
+        if (result) {
+            console.log(`Deleted person: ${result}`);
+            response.status(200).json(result);
+          } else {
+            console.log(`No person found with id: ${id}`);
+            response.status(404).json({ error: `No person found with id: ${id}` });
+          }
+    })
+    .catch(error => {
+        console.log(error)
+        response.status(404).end() //todo move to middleware
+        //next(error)
+        }
+    )
 
-    const personIndex = phoneBook.findIndex(person => person.id === id);
+    // const personIndex = phoneBook.findIndex(person => person.id === id);
 
-    if(personIndex !== -1){
-        const deletedPerson = phoneBook.splice(personIndex, 1)[0];
-        response.status(200).json(deletedPerson);
-    } else {
-        response.status(404).end()
-    }
+    // if(personIndex !== -1){
+    //     const deletedPerson = phoneBook.splice(personIndex, 1)[0];
+    //     response.status(200).json(deletedPerson);
+    // } else {
+    //     response.status(404).end()
+    // }
 
 })
 
