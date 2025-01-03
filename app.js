@@ -87,8 +87,8 @@ app.delete('/api/persons/:id', (request, response) => {
     })
     .catch(error => {
         console.log(error)
-        response.status(404).end() //todo move to middleware
-        //next(error)
+        //response.status(404).end() //todo move to middleware
+        next(error)
         }
     )
 
@@ -127,6 +127,19 @@ app.post('/api/persons', (request, response) => {
     }
 
 })
+
+//error handler
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'malformatted id' })
+    } else
+
+    return response.status(404).end()
+  }
+  
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
