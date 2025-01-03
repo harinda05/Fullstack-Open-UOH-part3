@@ -61,14 +61,19 @@ app.get('/info', (request, response) => {
 // get single person
 app.get('/api/persons/:id', (request, response) => {
     const id = request.params.id
-    const person  = phoneBook.find(person => person.id === id )
-
-    if(person){
-        response.send(person)
-    } else {
-        response.status(404).end()
-    }
-})
+    Person.findOne({ id })
+    .then(person => {
+      if (person) {
+        response.status(200).json(person);
+      } else {
+        response.status(404).json({ error: `No person found with id: ${id}` });
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      next(error); 
+    });
+});
 
 
 // delete single person
