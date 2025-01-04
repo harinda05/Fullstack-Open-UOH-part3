@@ -8,7 +8,7 @@ const Person = require('./models/person')
 const app = express()
 
 app.use(express.json())
-app.use(cors())
+app.use(cors());
 app.use(express.static('dist'))
 
 morgan.token('json_body', function getBody (req) {
