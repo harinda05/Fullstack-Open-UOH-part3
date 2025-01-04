@@ -110,7 +110,7 @@ app.delete('/api/persons/:id', (request, response) => {
 
 // add new person
 // get all persons
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const id = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
     if(!request.body.name || !request.body.number){
@@ -129,6 +129,7 @@ app.post('/api/persons', (request, response) => {
             console.log("saved new person in db %s", savedPerson);
             response.send(savedPerson)
         })
+        .catch(error => next(error))
     }
 
 })
@@ -139,7 +140,9 @@ const errorHandler = (error, request, response, next) => {
   
     if (error.name === 'CastError') {
       return response.status(400).send({ error: 'malformatted id' })
-    } else
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
+      }
 
     return response.status(404).end()
   }
