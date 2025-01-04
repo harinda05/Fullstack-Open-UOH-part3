@@ -7,9 +7,12 @@ const Person = require('./models/person')
 
 const app = express()
 
+app.use(cors({
+    origin: '*', // Replace '*' with a specific domain in production
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.static('dist'))
-
-app.use(cors());
 app.use(express.json())
 
 morgan.token('json_body', function getBody (req) {
