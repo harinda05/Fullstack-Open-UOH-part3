@@ -6,7 +6,23 @@ const Person = require('./models/person')
 
 const app = express()
 app.use(express.json())
-app.use(cors());
+
+const allowedOrigins = [
+    'http://localhost:3001', 
+    'https://fullstack-open-uoh-part3-2.onrender.com/'
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use(express.static('dist'))
 
