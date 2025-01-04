@@ -4,16 +4,11 @@ require('dotenv').config()
 const cors = require('cors')
 const Person = require('./models/person')
 
-
+app.use(cors());
 const app = express()
-
-app.use(cors({
-    origin: '*', // Replace '*' with a specific domain in production
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-app.use(express.static('dist'))
 app.use(express.json())
+
+app.use(express.static('dist'))
 
 morgan.token('json_body', function getBody (req) {
     return JSON.stringify(req.body)
