@@ -59,7 +59,7 @@ app.get('/info', (request, response) => {
 
 
 // get single person
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
     const id = request.params.id
     Person.findOne({ id })
     .then(person => {
@@ -77,7 +77,7 @@ app.get('/api/persons/:id', (request, response) => {
 
 
 // delete single person
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     const id = request.params.id.toString()
     console.log ("deleting: " + id)
     Person.findOneAndDelete({ ["id"]: id })
@@ -135,7 +135,7 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 //error handler
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, request, response) => {
     console.error(error.message)
   
     if (error.name === 'CastError') {
