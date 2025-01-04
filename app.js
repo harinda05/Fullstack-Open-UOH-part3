@@ -109,7 +109,6 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 // add new person
-// get all persons
 app.post('/api/persons', (request, response, next) => {
     const id = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 
@@ -134,8 +133,57 @@ app.post('/api/persons', (request, response, next) => {
 
 })
 
+//update user
+// update person by name (if name exists)
+app.put('/api/persons/:id', (request, response, next) => {
+    const id = request.params.id;
+    const { name, number } = request.body;
+  
+    if (!name || !number) {
+      return response.status(400).send({ error: 'name and number are required' });
+    }
+  
+    Person.findOneAndUpdate({ id: id }, { number }, { new: true ,  runValidators: true, context: 'query'})
+      .then(updatedPerson => {
+        if (updatedPerson) {
+          console.log(`Updated person: ${updatedPerson}`);
+          response.status(200).json(updatedPerson);
+        } else {
+          response.status(404).json({ error: `No person found with id: ${id}` });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        next(error);
+      });
+  });
+  
+  //update user
+app.put('/api/persons/:id', (request, response, next) => {
+    const id = request.params.id;
+    const { name, number } = request.body;
+  
+    if (!name || !number) {
+      return response.status(400).send({ error: 'name and number are required' });
+    }
+  
+    Person.findOneAndUpdate({ id: id }, { new: true ,  runValidators: true})
+      .then(updatedPerson => {
+        if (updatedPerson) {
+          console.log(`Updated person: ${updatedPerson}`);
+          response.status(200).json(updatedPerson);
+        } else {
+          response.status(404).json({ error: `No person found with id: ${id}` });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        next(error);
+      });
+  });
+
 //error handler
-const errorHandler = (error, request, response) => {
+const errorHandler = (error, request, response, next) => {
     console.error(error.message)
   
     if (error.name === 'CastError') {
